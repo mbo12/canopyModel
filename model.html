@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trees</title>
+  <style> 
+    canvas {
+      position: absolute;
+      top: 0;
+    }
+  </style>
+  <meta charset='utf-8'>
+</head>
+<body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="displayModel.js"></script>
+  <script type="text/javascript">
+  var M = 12;
+var PLOTSIZE = 500;
+var treeRadius = 1;
+  var canvas = d3.select("body").append("canvas")
+      .attr("width", PLOTSIZE*treeRadius*2)
+      .attr("height", PLOTSIZE*treeRadius*2);
+      
+  var context = canvas.node().getContext("2d");
+  context.fillStyle = "green";
+  context.strokeStyle="white";
+  context.strokeWidth = 0;
+      
+ 
+  
+  function aliveTrees (testTrees) {
+      var alivetrees = [];
+      for (var i = M; i < testTrees.length-M; i++) {
+  	    for (var j = M; j < testTrees[0].length-M; j++) {
+  	      if (testTrees[i][j]==1) {
+  		      alivetrees.push([i-M,j-M]);
+	        }
+	       
+	      }
+  	  }
+      return alivetrees;
+  }
+
+  var model = new WebSocket("ws://localhost:8000/model");
+
+  model.onclose = function(e){alert("!");};
+  model.onmessage = function(e) { console.log(e); 
+    var trees = JSON.parse(e.data); 
+    updateCanvas(trees);}; 
+   
+function updateCanvas(data) {
+  console.log("canvas");
+  var dead = data.dead;
+  var established = data.established;
+  established.forEach(function(d) {
+    context.fillStyle = "green";
+    context.beginPath();
+    context.arc(2*(d[0]-M+treeRadius)*treeRadius,2*(treeRadius-M+d[1])*treeRadius,treeRadius,0,2*Math.PI);
+    context.closePath();
+    context.fill();
+
+  });
+  dead.forEach(function(d) {
+    context.fillStyle = "white";
+    context.beginPath();
+    context.fillRect((d[0]-M)*treeRadius*2,(d[1]-M)*treeRadius*2,treeRadius*2,treeRadius*2)
+    context.closePath();
+    context.fill();
+  });
+  dead = null;
+  established = null;
+  data = null;
+  console.log(data);
+  model.send('dota'); 
+}
+  </script>
+
+
+</body>
+</html>
