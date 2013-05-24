@@ -1,2 +1,18 @@
-This implements a spatial tree matrix that can be used to implement the model about vegetation patterns described in this paper: http://www.nature.com/nature/journal/v449/n7159/full/nature06060.html
+This implements a spatial tree matrix that can be used to implement the model 
+about vegetation patterns described in this paper: 
+http://www.nature.com/nature/journal/v449/n7159/full/nature06060.html
+
+
+
+To run the model, python server.py
+and point to http://localhost:8000/
+
+
+
+Dependencies:
+bottle http://bottlepy.org/docs/dev/
+greenlet, gevent, and gevent-websocket.  They can all be installed easily with pip.
+Gevent depends on libevent (not a python module, so you have to install it before calling pip install gevent).
+  
+For some reason, I had trouble until I built libevent from source, but your mileage may vary on that one. libevent is here http://libevent.org/
 
